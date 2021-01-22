@@ -1,6 +1,6 @@
 var watch_id;
 var pos_list = [];
-var distancev = 0;
+var distance = 0;
 
 function measure_distance(pos1, pos2) {
   lat1 = pos1[0];
