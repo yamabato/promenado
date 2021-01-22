@@ -1,6 +1,6 @@
 var watch_id;
 var pos_list = [];
-var distance;
+var distancev = 0;
 
 function measure_distance(pos1, pos2) {
   lat1 = pos1[0];
@@ -47,4 +47,6 @@ function write(position) {
     console.log(geo_text);
 }
 
-init();
+window.onload = () => {
+    init();
+}
