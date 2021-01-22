@@ -1,6 +1,8 @@
 var watch_id;
 var pos_list = [];
 var distance = 0;
+var time = 0;
+var count_id;
 
 function measure_distance(pos1, pos2) {
   lat1 = pos1[0];
@@ -12,6 +14,14 @@ function measure_distance(pos1, pos2) {
   lat2 *= Math.PI / 180;
   lng2 *= Math.PI / 180;
   return 6371 * Math.acos(Math.cos(lat1) * Math.cos(lat2) * Math.cos(lng2 - lng1) + Math.sin(lat1) * Math.sin(lat2)) * 1000;
+}
+
+function count(){
+    time++;
+}
+
+function sec2hour(s){
+    return s / 3600;
 }
 
 function init() {
@@ -42,6 +52,7 @@ function write(position) {
     }
 
     geo_text += "総移動距離:" + distance + "m\n";
+    geo_text += "経過時間:" + sec2hour(time) + "h\n";
 
     document.getElementById('position_view').innerHTML = geo_text;
     console.log(geo_text);
@@ -49,4 +60,5 @@ function write(position) {
 
 window.onload = () => {
     init();
+    count_id = setInterval(count,1000);
 }
