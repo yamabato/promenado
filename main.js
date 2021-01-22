@@ -11,7 +11,7 @@ function measure_distance(pos1, pos2) {
   lng1 *= Math.PI / 180;
   lat2 *= Math.PI / 180;
   lng2 *= Math.PI / 180;
-  return 6371 * Math.acos(Math.cos(lat1) * Math.cos(lat2) * Math.cos(lng2 - lng1) + Math.sin(lat1) * Math.sin(lat2));
+  return 6371 * Math.acos(Math.cos(lat1) * Math.cos(lat2) * Math.cos(lng2 - lng1) + Math.sin(lat1) * Math.sin(lat2)) * 1000;
 }
 
 function init() {
