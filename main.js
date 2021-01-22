@@ -1,5 +1,5 @@
 var watch_id;
-var pos_list;
+var pos_list = [];
 var distance;
 
 function measure_distance(pos1, pos2) {
@@ -20,9 +20,9 @@ function init() {
 
 function write(position) {
 
-    longitude = position.coords.longitude;
-    latitude = position.coords.latitude;
-    altitude = position.coords.altitude;
+    let longitude = position.coords.longitude;
+    let latitude = position.coords.latitude;
+    let altitude = position.coords.altitude;
     var geo_text = "緯度:" + latitude + "\n";
     geo_text += "経度:" + longitude + "\n";
     geo_text += "高度:" + altitude + "\n";
@@ -36,7 +36,7 @@ function write(position) {
     geo_text += "取得時刻:" + date.toLocaleString() + "\n";
 
     pos_list.push([latitude, longitude]);
-    len = pos_list.length;
+    let len = pos_list.length;
     if (len >= 2){
         distance += measure_distance(pos_list[len-2],pos_list[len-1]);
     }
@@ -44,6 +44,7 @@ function write(position) {
     geo_text += "総移動距離:" + distance + "\n";
 
     document.getElementById('position_view').innerHTML = geo_text;
+    console.log(geo_text);
 }
 
 init();
