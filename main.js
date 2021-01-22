@@ -41,7 +41,7 @@ function write(position) {
         distance += measure_distance(pos_list[len-2],pos_list[len-1]);
     }
 
-    geo_text += "総移動距離:" + distance + "\n";
+    geo_text += "総移動距離:" + distance + "m\n";
 
     document.getElementById('position_view').innerHTML = geo_text;
     console.log(geo_text);
