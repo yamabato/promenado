@@ -22,11 +22,11 @@ function count(){
 }
 
 function sec2time(sec){
-    let hour = Math.floor(sec / 3600);
-    let min = Math.floor(sec / 60);
-    let sec = sec % 60;
+    let h = Math.floor(sec / 3600);
+    let m = Math.floor(sec / 60);
+    let s = sec % 60;
 
-    return [hour, min, sec];
+    return [h, m, s];
 }
 
 function init() {
@@ -65,10 +65,9 @@ function write(position) {
     geo_text += "経過時間:" + elapsed[0] + "時間" + elapsed[1] + "分" + elapsed[2] + "秒" + "\n";
 
     document.getElementById('position_view').innerHTML = geo_text;
-    console.log(geo_text);
 }
 
 window.onload = () => {
     init();
-    count_id = setInterval(count,1000);
+    //count_id = setInterval(count,1000);
 }
