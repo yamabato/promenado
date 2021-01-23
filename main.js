@@ -119,7 +119,7 @@ function write(position) {
     */
     geo_text += "総移動距離:" + d[0] + "km" + d[1] + "m"  + "\n";
     geo_text += "経過時間:" + elapsed[0] + "時間" + elapsed[1] + "分" + elapsed[2] + "秒" + "\n";
-    geo_text += "平均速度:" + (speed? speed : 0) + "km/s\n";
+    geo_text += "平均速度:" + (speed? speed : 0) + "km/h\n";
 
     update_map();
 
