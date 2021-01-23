@@ -1,3 +1,5 @@
+//5秒に一回地図
+//AIzaSyAl0b_nXKAUV2IDvkZl0qXdH5CaO1X6k4M
 var watch_id;
 var pos_list = [];
 var distance = 0;
@@ -7,6 +9,22 @@ var count_id;
 
 let speed_digit = 10 ** 2;
 let distance_digit = 1 ** 3;
+
+function update_map(){
+    if (pos_list.length == 0){
+        return;
+    }
+    var p = pos_list[pos_list.length-1];
+    var pos = new google.maps.LatLng(p[0],p[1]);
+    console.log(pos);
+    var Options = {
+        zoom: 15,
+        center: pos,
+        mapTypeId: "roadmap"
+    };
+    console.log(pos);
+    var map = new google.maps.Map(document.getElementById("map"), Options);
+}
 
 function measure_distance(pos1, pos2) {
   lat1 = pos1[0];
@@ -35,6 +53,11 @@ function count(){
     time_text += "</h3>";
 
     document.getElementById("time").innerHTML = time_text;
+
+    if (time % 5 == 0){
+        console.log(pos_list);
+        update_map();
+    }
 }
 
 function sec2str(sec){
