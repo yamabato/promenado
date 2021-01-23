@@ -54,8 +54,7 @@ function measure_distance(pos1, pos2) {
   return Math.round(dis * distance_digit) / distance_digit
 }
 
-function count(){
-    time++;
+function clock(){
     var time_text = "<h3 class=time>";
     var now = new Date();
     let hours = now.getHours();
@@ -66,22 +65,29 @@ function count(){
     time_text += minutes + "分";
     time_text += seconds + "秒";
     time_text += "</h3>";
-
     document.getElementById("time").innerHTML = time_text;
 }
 
-function sec2str(sec){
+function count(){
+    time++;
+    elapsed = sec2str(time * 1000);
+    document.getElementById("elapsed").innerHTML = "<h1 class='elapsed'>経過時間: " + elapsed + "</h1>";
+
+}
+
+function sec2str(msec){
+    sec = msec / 1000;
     let h = Math.floor(sec / 3600);
     let m = Math.floor(sec / 60) % 60;
     let s = sec % 60;
 
-    return [h, m, s];
+    return (h?h+"時間":"") + (m?m+"分":"") + s + "秒";
 }
 
 function m2str(m){
     let kilo_meter = Math.floor(m / 1000);
     let meter = Math.floor(m % 1000);
-    return [kilo_meter, meter];
+    return (kilo_meter?kilo_meter+"km":"") + meter + "m";
 }
 
 function init() {
@@ -96,16 +102,12 @@ function write(position) {
     let altitude = position.coords.altitude;
     var date = new Date(position.timestamp);
     var now_time = date.getTime();
-    if (start_time == 0){
-        start_time = now_time;
-    }
     pos_list.push([latitude, longitude]);
     var len = pos_list.length;
     if (len >= 2){
         distance += measure_distance(pos_list[len-2],pos_list[len-1]);
     }
     var d = m2str(distance);
-    var elapsed = sec2str(time);
     var speed = Math.round((distance / (time / 3600)) / 1000 * speed_digit) / speed_digit;
 
     /*
@@ -117,8 +119,7 @@ function write(position) {
     geo_text += "移動方向:" + position.coords.heading + "\n";
     geo_text += "速度:" + position.coords.speed + "\n";
     */
-    geo_text += "総移動距離:" + d[0] + "km" + d[1] + "m"  + "\n";
-    geo_text += "経過時間:" + elapsed[0] + "時間" + elapsed[1] + "分" + elapsed[2] + "秒" + "\n";
+    geo_text += "総移動距離:" + d + "\n";
     geo_text += "平均速度:" + (speed? speed : 0) + "km/h\n";
 
     update_map();
@@ -132,17 +133,17 @@ function store_data(){
 
     let start = start_date.toLocaleString();
     let finish = finish_date.toLocaleString();
+    let date = start_date.toLocaleDateString();
 
-    let d = m2str(distance);
-    let distance_text = d[0] + "km " + d[1] + "m";
+    let distance_text = m2str(distance);
 
-    let elapsed = sec2str(finish_time - start_time);
-    let elapsed_text = elapsed[0] + "時間" + elapsed[1] + "分" + elapsed[2] + "秒";
+    let elapsed_text = sec2str(finish_time - start_time);
 
     let speed = Math.round((distance / ((finish_time - start_time) / 3600)) / 1000 * speed_digit) / speed_digit;
     let speed_text = (speed? speed : 0) + "km/h";
 
     let obj = {
+        "date": date,
         "start": start,
         "finish": finish,
         "distance": distance_text,
@@ -164,16 +165,20 @@ function store_data(){
 
 }
 
+setInterval(clock,1000);
 function start_stop(){
     run = !run;
 
     if (run){
         document.getElementById("start-stop").innerHTML = '<a href="#" class="btn btn-flat" onclick="start_stop()">停止</a>';
+        var date = new Date();
+        start_time = date.getTime();
         map_init();
         init();
         count_id = setInterval(count,1000);
     }else{
         document.getElementById("start-stop").innerHTML = '<a href="#" class="btn btn-flat" onclick="start_stop()">再開</a>';
+        clearInterval(count_id);
         navigator.geolocation.clearWatch(watch_id);
         var date = new Date();
         finish_time = date.getTime();

@@ -13,11 +13,32 @@ h1{
     font-size: 100px;
 }
 
+h1.error{
+    display: inline;
+    background: linear-gradient(transparent 60%, rgba(255,127,80,0.5) 60%);
+    font-size: 80px;
+}
+
+h1.date{
+    display: inline;
+    background: linear-gradient(transparent 60%, rgba(25,25,112,0.7) 60%);
+    font-size: 90px;
+}
+
+h1.elapsed{
+    display: inline;
+    background: linear-gradient(transparent 60%, rgba(0, 255, 255 ,0.4) 60%);
+    font-size: 70px;
+}
+
 h3.time{
     font-size: 80px;
     font-family: "Impact";
 }
 
+h3.data{
+    font-size: 40px;
+}
 *,
 *:before,
 *:after {
