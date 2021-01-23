@@ -70,7 +70,8 @@ function clock(){
 
 function count(){
     time++;
-    elapsed = sec2str(time * 1000);
+    now = new Date();
+    elapsed = sec2str(now.getTime() - start_time);
     document.getElementById("elapsed").innerHTML = "<h1 class='elapsed'>経過時間: " + elapsed + "</h1>";
 
 }
