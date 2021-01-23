@@ -6,24 +6,39 @@ var distance = 0;
 var start_time = 0;
 var time = 0;
 var count_id;
+var map;
+var point = [0, 0];
 
 let speed_digit = 10 ** 2;
 let distance_digit = 1 ** 3;
+
+function map_init(){
+    map = L.map('map', { zoomControl: false });
+
+    L.control.scale({ maxWidth: 200, position: 'bottomright', imperial: false }).addTo(map);
+    L.control.zoom({ position: 'bottomleft' }).addTo(map);
+}     
 
 function update_map(){
     if (pos_list.length == 0){
         return;
     }
-    var p = pos_list[pos_list.length-1];
-    var pos = new google.maps.LatLng(p[0],p[1]);
-    console.log(pos);
-    var Options = {
-        zoom: 15,
-        center: pos,
-        mapTypeId: "roadmap"
-    };
-    console.log(pos);
-    var map = new google.maps.Map(document.getElementById("map"), Options);
+
+    if (pos_list.length == 1){
+        point = pos_list[pos_list.length-1];
+        map.setView(point, 30);
+    }
+
+    L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
+      attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
+    }).addTo(map);
+
+    console.log(pos_list);
+
+    for (point of pos_list){
+        L.marker(point,{title:"ポイント1",draggable:false}).addTo(map);
+    }
+    L.polyline(pos_list, { color: 'blue', weight: 5 }).addTo(map);
 }
 
 function measure_distance(pos1, pos2) {
@@ -53,11 +68,6 @@ function count(){
     time_text += "</h3>";
 
     document.getElementById("time").innerHTML = time_text;
-
-    if (time % 5 == 0){
-        console.log(pos_list);
-        update_map();
-    }
 }
 
 function sec2str(sec){
@@ -111,10 +121,13 @@ function write(position) {
     geo_text += "経過時間:" + elapsed[0] + "時間" + elapsed[1] + "分" + elapsed[2] + "秒" + "\n";
     geo_text += "平均速度:" + (speed? speed : 0) + "km/s\n";
 
+    update_map();
+
     document.getElementById("position_view").innerHTML = geo_text;
 }
 
 window.onload = () => {
+    map_init();
     init();
     count_id = setInterval(count,1000);
 }
