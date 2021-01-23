@@ -21,12 +21,18 @@ function count(){
     time++;
 }
 
-function sec2time(sec){
+function sec2str(sec){
     let h = Math.floor(sec / 3600);
-    let m = Math.floor(sec / 60);
+    let m = Math.floor(sec / 60) % 60;
     let s = sec % 60;
 
     return [h, m, s];
+}
+
+function m2str(m){
+    let kilo_meter = Math.floor(m / 1000);
+    let meter = Math.floor(m % 1000);
+    return [kilo_meter, meter];
 }
 
 function init() {
@@ -34,7 +40,6 @@ function init() {
 }
 
 function write(position) {
-
     let longitude = position.coords.longitude;
     let latitude = position.coords.latitude;
     let altitude = position.coords.altitude;
@@ -60,9 +65,11 @@ function write(position) {
         distance += measure_distance(pos_list[len-2],pos_list[len-1]);
     }
 
-    geo_text += "総移動距離:" + distance + "m\n";
+    var d = m2str(distance);
+    geo_text += "総移動距離:" + d[0] + "km" + d[1] + "m"  + "\n";
     var elapsed = sec2str(time - start_time);
     geo_text += "経過時間:" + elapsed[0] + "時間" + elapsed[1] + "分" + elapsed[2] + "秒" + "\n";
+    geo_text += "平均速度:" + (distance / (time - start_time) / 3600) / 1000 + "km/s\n";
 
     document.getElementById('position_view').innerHTML = geo_text;
 }
