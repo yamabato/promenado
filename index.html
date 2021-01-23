@@ -7,16 +7,19 @@
 
         <link rel="stylesheet" href="style.css">
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" />
+        <script type="text/javascript" src="strage.js"></script>
         <script type="text/javascript" src="main.js"></script>
         <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"></script>
     </head>
     <body>
-        <h1>記録</h1>
+        <h1>散歩する</h1>
         <pre id="time"></pre>
         <h1><pre id="position_view"></pre></h1>
-        <a href="" class="btn btn-flat"><span>PUSH！</span></a>
+        <div id="start-stop"><a href="#" class="btn btn-flat" onclick="start_stop()">開始</a></div>
 
         <div id="map"></div>
+
+        <a href="#" class="btn btn-flat" onclick="store_data()">保存</a>
 
     </body>
 

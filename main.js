@@ -1,13 +1,13 @@
-//5秒に一回地図
-//AIzaSyAl0b_nXKAUV2IDvkZl0qXdH5CaO1X6k4M
 var watch_id;
 var pos_list = [];
 var distance = 0;
 var start_time = 0;
+var finish_time = 0;
 var time = 0;
 var count_id;
 var map;
 var point = [0, 0];
+var run = false;
 
 let speed_digit = 10 ** 2;
 let distance_digit = 1 ** 3;
@@ -36,7 +36,7 @@ function update_map(){
     console.log(pos_list);
 
     for (point of pos_list){
-        L.marker(point,{title:"ポイント1",draggable:false}).addTo(map);
+        L.marker(point,{title:"通過地点",draggable:false}).addTo(map);
     }
     L.polyline(pos_list, { color: 'blue', weight: 5 }).addTo(map);
 }
@@ -126,8 +126,57 @@ function write(position) {
     document.getElementById("position_view").innerHTML = geo_text;
 }
 
-window.onload = () => {
-    map_init();
-    init();
-    count_id = setInterval(count,1000);
+function store_data(){
+    let start_date = new Date(start_time);
+    let finish_date = new Date(finish_time);
+
+    let start = start_date.toLocaleString();
+    let finish = finish_date.toLocaleString();
+
+    let d = m2str(distance);
+    let distance_text = d[0] + "km " + d[1] + "m";
+
+    let elapsed = sec2str(finish_time - start_time);
+    let elapsed_text = elapsed[0] + "時間" + elapsed[1] + "分" + elapsed[2] + "秒";
+
+    let speed = Math.round((distance / ((finish_time - start_time) / 3600)) / 1000 * speed_digit) / speed_digit;
+    let speed_text = (speed? speed : 0) + "km/h";
+
+    let obj = {
+        "start": start,
+        "finish": finish,
+        "distance": distance_text,
+        "time": elapsed_text,
+        "speed": speed_text,
+    }
+
+    l = store.get("length");
+
+    if (l == undefined){
+        l = 0;
+        store.set("length", l);
+    }
+    
+    store.set(l, obj);
+    l += 1;
+
+    store.set("length", l);
+
 }
+
+function start_stop(){
+    run = !run;
+
+    if (run){
+        document.getElementById("start-stop").innerHTML = '<a href="#" class="btn btn-flat" onclick="start_stop()">停止</a>';
+        map_init();
+        init();
+        count_id = setInterval(count,1000);
+    }else{
+        document.getElementById("start-stop").innerHTML = '<a href="#" class="btn btn-flat" onclick="start_stop()">再開</a>';
+        navigator.geolocation.clearWatch(watch_id);
+        var date = new Date();
+        finish_time = date.getTime();
+    }
+}
+
