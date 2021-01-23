@@ -2,7 +2,11 @@ var watch_id;
 var pos_list = [];
 var distance = 0;
 var start_time = 0;
+var time = 0;
 var count_id;
+
+let speed_digit = 10 ** 2;
+let distance_digit = 1 ** 3;
 
 function measure_distance(pos1, pos2) {
   lat1 = pos1[0];
@@ -14,11 +18,23 @@ function measure_distance(pos1, pos2) {
   lat2 *= Math.PI / 180;
   lng2 *= Math.PI / 180;
   let dis = 6371 * Math.acos(Math.cos(lat1) * Math.cos(lat2) * Math.cos(lng2 - lng1) + Math.sin(lat1) * Math.sin(lat2)) * 1000;
-  return Math.round(dis * 1000) / 1000
+  return Math.round(dis * distance_digit) / distance_digit
 }
 
 function count(){
     time++;
+    var time_text = "<h3 class=time>";
+    var now = new Date();
+    let hours = now.getHours();
+    let minutes = now.getMinutes();
+    let seconds = now.getSeconds();
+
+    time_text += hours + "時";
+    time_text += minutes + "分";
+    time_text += seconds + "秒";
+    time_text += "</h3>";
+
+    document.getElementById("time").innerHTML = time_text;
 }
 
 function sec2str(sec){
@@ -40,41 +56,42 @@ function init() {
 }
 
 function write(position) {
-    let longitude = position.coords.longitude;
+    var geo_text = "";
+
     let latitude = position.coords.latitude;
+    let longitude = position.coords.longitude;
     let altitude = position.coords.altitude;
-    var geo_text = "緯度:" + latitude + "\n";
+    var date = new Date(position.timestamp);
+    var now_time = date.getTime();
+    if (start_time == 0){
+        start_time = now_time;
+    }
+    pos_list.push([latitude, longitude]);
+    var len = pos_list.length;
+    if (len >= 2){
+        distance += measure_distance(pos_list[len-2],pos_list[len-1]);
+    }
+    var d = m2str(distance);
+    var elapsed = sec2str(time);
+    var speed = Math.round((distance / (time / 3600)) / 1000 * speed_digit) / speed_digit;
+
+    /*
+    geo_text += "緯度:" + latitude + "\n";
     geo_text += "経度:" + longitude + "\n";
     geo_text += "高度:" + altitude + "\n";
     geo_text += "位置精度:" + position.coords.accuracy + "\n";
     geo_text += "高度精度:" + position.coords.altitudeAccuracy  + "\n";
     geo_text += "移動方向:" + position.coords.heading + "\n";
     geo_text += "速度:" + position.coords.speed + "\n";
-
-    var date = new Date(position.timestamp);
-    var time = date.getTime();
-    if (start_time == 0){
-        start_time = date.getTime();
-    }
-
-    geo_text += "取得時刻:" + date.toLocaleString() + "\n";
-
-    pos_list.push([latitude, longitude]);
-    var len = pos_list.length;
-    if (len >= 2){
-        distance += measure_distance(pos_list[len-2],pos_list[len-1]);
-    }
-
-    var d = m2str(distance);
+    */
     geo_text += "総移動距離:" + d[0] + "km" + d[1] + "m"  + "\n";
-    var elapsed = sec2str(time - start_time);
     geo_text += "経過時間:" + elapsed[0] + "時間" + elapsed[1] + "分" + elapsed[2] + "秒" + "\n";
-    geo_text += "平均速度:" + (distance / (time - start_time) / 3600) / 1000 + "km/s\n";
+    geo_text += "平均速度:" + (speed? speed : 0) + "km/s\n";
 
-    document.getElementById('position_view').innerHTML = geo_text;
+    document.getElementById("position_view").innerHTML = geo_text;
 }
 
 window.onload = () => {
     init();
-    //count_id = setInterval(count,1000);
+    count_id = setInterval(count,1000);
 }

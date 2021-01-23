@@ -8,6 +8,11 @@ h1{
     font-size: 100px;
 }
 
+h3.time{
+    font-size: 80px;
+    font-family: "Impact";
+}
+
 *,
 *:before,
 *:after {
